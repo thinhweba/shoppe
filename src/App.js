@@ -9,6 +9,7 @@ import { SignUp } from './pages/SignUp/SignUp';
 import Admin from './pages/Admin';
 import AdminProductPage from './pages/Admin/AdminProductPage';
 import AddProduct from './components/Admin/AddProduct';
+import Cart from './pages/ShoppeCart';
 Object.defineProperty(String.prototype, 'capitalize', {
     value: function () {
         return this.charAt(0).toUpperCase() + this.slice(1);
@@ -34,6 +35,7 @@ function App() {
                     <Route path="/admin" element={<Admin />} />
                     <Route path="/admin/product" element={<AdminProductPage />} />
                     <Route path="/admin/addproduct" element={<AddProduct />} />
+                    <Route path="/cart" element={<Cart />} />
                     <Route path="/" element={<Home />} />
                     <Route path="/product/:productId" element={<DetailProduct />} />
                     <Route path="/category/:categoryId" element={<Category />} />

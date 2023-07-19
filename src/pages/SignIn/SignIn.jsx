@@ -22,8 +22,15 @@ export const SignIn = () => {
             console.log(signInfo);
 
             axios.post('/auth/login', signInfo).then((res) => {
-                // console.log(res.data.user._id);
-                dispatch({ type: setToken, payload: { token: res.data.accessToken, userId: res.data.user._id } });
+                // console.log(res.data.user);
+                dispatch({
+                    type: setToken,
+                    payload: {
+                        token: res.data.accessToken,
+                        userId: res.data.user._id,
+                        userName: res.data.user.username,
+                    },
+                });
 
                 setTimeout(() => {
                     navigate('/');
@@ -40,6 +47,7 @@ export const SignIn = () => {
                 <div className=" top-0 right-0 left-0 h-[99px] bg-white flex flex-row justify-between">
                     <div className=" flex items-center">
                         <img
+                            onClick={() => {navigate("/")}}
                             className=" flex justify-center h-[50px] cursor-pointer"
                             src="https://www.freepnglogos.com/uploads/shopee-logo-png/shopee-logo-digital-economy-forum-mdcc-1.png"
                             alt="logo"

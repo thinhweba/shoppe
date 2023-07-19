@@ -1,15 +1,20 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import QuantitySelection from '~/components/DetailProduct/QuantitySelection';
 import OtherProduct from './OtherProduct';
 import Header from '~/components/Home/Header';
 import Footer from '~/components/Home/Footer';
+import { useDispatch, useSelector } from 'react-redux';
+import { addToCart } from '~/state/AuthReducer';
 
 const DetailProduct = ({}) => {
+    const userToken = useSelector((state) => state.token);
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
     const [selectedQuantity, setSelectedQuantity] = useState(1);
     const [product, SetProduct] = useState({});
-
+    const [isOverlayActive, setIsOverlayActive] = useState(false);
     const { productId } = useParams();
 
     useEffect(() => {
@@ -25,6 +30,13 @@ const DetailProduct = ({}) => {
 
     const handleQuantityChange = (newQuantity) => {
         setSelectedQuantity(newQuantity);
+    };
+    const handleBuyNow = () => {
+        if (userToken) {
+            setIsOverlayActive(true)
+        } else {
+            navigate('/signin');
+        }
     };
     return (
         <>
@@ -84,9 +96,28 @@ const DetailProduct = ({}) => {
                                         d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z"
                                     />
                                 </svg>
-                                <span className=" text-orange-600 ">Thêm vào giỏ hàng</span>
+                                <span
+                                    onClick={() => {
+                                        dispatch(
+                                            addToCart({
+                                                _id: product._id,
+                                                title: product.title,
+                                                imageUrl: product.imageUrl,
+                                                price: product.price,
+                                                quantity: selectedQuantity,
+                                            }),
+                                        );
+                                        navigate('/cart');
+                                    }}
+                                    className=" text-orange-600 "
+                                >
+                                    Thêm vào giỏ hàng
+                                </span>
                             </button>
-                            <button className="w-48 text-center bg-orange-600 text-white py-6 rounded-md">
+                            <button
+                                onClick={() => handleBuyNow()}
+                                className="w-48 text-center bg-orange-600 text-white py-6 rounded-md"
+                            >
                                 Mua ngay
                             </button>
                         </div>
@@ -94,7 +125,50 @@ const DetailProduct = ({}) => {
                 </div>
                 <OtherProduct category={product.category} productId={product._id} />
             </div>
+
             <Footer />
+            {isOverlayActive && (
+                <div>
+                    <div className="fixed z-10 inset-0 overflow-y-auto">
+                        <div className="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+                            <div className="fixed inset-0 transition-opacity">
+                                <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
+                            </div>
+                            <span className="hidden sm:inline-block sm:align-middle sm:h-screen"></span>
+                            &#8203;
+                            <div className="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
+                                <div>
+                                    <div
+                                        onClick={() => {
+                                            setIsOverlayActive(false);
+                                        }}
+                                        className="mx-auto flex items-center cursor-pointer justify-center h-12 w-12 rounded-full bg-red-100"
+                                    >
+                                        <svg
+                                            className="h-6 w-6 text-red-600"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            stroke="currentColor"
+                                        >
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                strokeWidth="2"
+                                                d="M6 18L18 6M6 6l12 12"
+                                            />
+                                        </svg>
+                                    </div>
+                                    <div className="mt-3 text-center sm:mt-5">
+                                        <h3 className="text-2xl leading-6 font-medium text-gray-900">
+                                            bạn đã mua hàng thành công
+                                        </h3>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
         </>
     );
 };

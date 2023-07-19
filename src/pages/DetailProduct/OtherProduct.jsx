@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import SameCategoryProduct from '~/components/DetailProduct/SameCategoryProduct';
 
 const OtherProduct = ({ category, productId }) => {
+    
     const [sameProductList, SetSameProductList] = useState([]);
 
     useEffect(() => {

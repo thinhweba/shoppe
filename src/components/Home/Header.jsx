@@ -1,7 +1,15 @@
+import { useDispatch, useSelector } from 'react-redux';
+import { setLogout } from '~/state/AuthReducer';
+
 const Header = ({}) => {
+    const dispatch = useDispatch()
     const signIn = () => {
         window.location.assign('/signin');
         // navigate('/signin');
+    };
+    const signOut = () => {
+        dispatch(setLogout()) 
+        window.location.assign('/signin');
     };
 
     const signUp = () => {
@@ -11,6 +19,10 @@ const Header = ({}) => {
     const adMin = () => {
         window.location.assign('/admin');
     };
+    const cart = () => {
+        window.location.assign('/cart');
+    };
+    const userName = useSelector((state) => state.userName);
     return (
         <>
             <div className="fixed top-0 right-0 left-0 h-[99px] bg-gradient-to-b from-orange-600 to-orange-500"></div>
@@ -19,7 +31,7 @@ const Header = ({}) => {
                 <div className=" flex flex-row text-xl text-white place-content-between mx-4 mt-2">
                     <div className="flex flex-row gap-6">
                         <span className=" cursor-pointer" onClick={adMin}>
-                            Kênh người bán{' '}
+                            Kênh người bán
                         </span>
                         <span className=" cursor-pointer">Tải ứng dụng</span>
                     </div>
@@ -29,9 +41,15 @@ const Header = ({}) => {
                         <span className=" cursor-pointer" onClick={signUp}>
                             Đăng ký
                         </span>
-                        <span className=" cursor-pointer" onClick={signIn}>
-                            Đăng nhập
-                        </span>
+                        {userName ? (
+                            <span className=" cursor-pointer" onClick={signOut}>
+                                Đăng xuất
+                            </span>
+                        ) : (
+                            <span className=" cursor-pointer" onClick={signIn}>
+                                Đăng nhập
+                            </span>
+                        )}
                     </div>
                 </div>
                 <div className="flex flex-row pt-4 gap-6 px-3 pb-3 ">
@@ -85,6 +103,7 @@ const Header = ({}) => {
                             stroke="white"
                         >
                             <path
+                                onClick={cart}
                                 strokeLinecap="round"
                                 strokeLinejoin="round"
                                 d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z"
